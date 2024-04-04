@@ -27,19 +27,26 @@ public class TodoMVCTest {
         takeScreenshot(driver, "TestScreenshots/ToDoMVCTest/homepage.png");
     }
 
+    @BeforeEach
+    void browseToHomepage() {
+        driver.get("https://todomvc.com/");
+    }
+
     @Test
     void testHomepageTitleContainerToDoMVC(){
         String pageTitle = driver.getTitle();
         assertTrue(pageTitle.contains("TodoMVC"));
     }
 
-    @BeforeEach
-    void browseToSelectedFramework() {
-        driver.get("https://todomvc.com/examples/react/dist/");
+    @Test
+    void navigateToDesiredFramework(){
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        assertEquals("TodoMVC: React", driver.getTitle());
     }
 
     @Test
     void addNewTodoOnSelectedFramework() throws Exception {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
         driver.findElement(By.id("todo-input")).click();
         driver.findElement(By.id("todo-input")).sendKeys("Walk the dog.");
         driver.findElement(By.id("todo-input")).sendKeys(Keys.ENTER);
@@ -51,6 +58,14 @@ public class TodoMVCTest {
 
         assertEquals("Walk the dog.", listItemText);
     }
+
+
+
+    @DisplayName("Test Adding Multiple todo Items")
+    @ParameterizedTest( name = "Add {0} should return {1}")
+    @CsvSource({
+            "Walk the dog, Walk the dog",
+    })
 
     @AfterAll
     static void closeBrowser() {
