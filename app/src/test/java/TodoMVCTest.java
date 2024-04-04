@@ -33,6 +33,25 @@ public class TodoMVCTest {
         assertTrue(pageTitle.contains("TodoMVC"));
     }
 
+    @BeforeEach
+    void browseToSelectedFramework() {
+        driver.get("https://todomvc.com/examples/react/dist/");
+    }
+
+    @Test
+    void addNewTodoOnSelectedFramework() throws Exception {
+        driver.findElement(By.id("todo-input")).click();
+        driver.findElement(By.id("todo-input")).sendKeys("Walk the dog.");
+        driver.findElement(By.id("todo-input")).sendKeys(Keys.ENTER);
+        takeScreenshot(driver, "TestScreenshots/ToDoMVCTest/ItemAdded.png");
+
+        WebElement listItem = driver.findElement(By.cssSelector("li:nth-child(1) label"));
+        String listItemText = listItem.getText();
+        System.out.println(listItemText);
+
+        assertEquals("Walk the dog.", listItemText);
+    }
+
     @AfterAll
     static void closeBrowser() {
         driver.quit();}
