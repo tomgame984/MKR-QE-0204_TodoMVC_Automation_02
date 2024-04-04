@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.interactions.Actions;
 
 public class TodoMVCTest {
     private static ChromeDriver driver;
@@ -47,16 +48,35 @@ public class TodoMVCTest {
     @Test
     void addNewTodoOnSelectedFramework() throws Exception {
         driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
-        driver.findElement(By.id("todo-input")).click();
-        driver.findElement(By.id("todo-input")).sendKeys("Walk the dog.");
-        driver.findElement(By.id("todo-input")).sendKeys(Keys.ENTER);
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog.");
+        inputField.sendKeys(Keys.ENTER);
         takeScreenshot(driver, "TestScreenshots/ToDoMVCTest/ItemAdded.png");
 
         WebElement listItem = driver.findElement(By.cssSelector("li:nth-child(1) label"));
         String listItemText = listItem.getText();
-        System.out.println(listItemText);
-
         assertEquals("Walk the dog.", listItemText);
+    }
+
+    @Test
+    void modifyTodoEntry() throws Exception {
+        Actions act = new Actions(driver);
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog");
+        inputField.sendKeys(Keys.ENTER);
+        WebElement listItem = driver.findElement(By.cssSelector("li:nth-child(1) label"));
+        act.doubleClick(listItem).perform();
+        Thread.sleep(2000);
+
+        driver.findElement(By.cssSelector(".input-container:nth-child(1) > #todo-input")).sendKeys(" again");
+        driver.findElement(By.cssSelector(".input-container:nth-child(1) > #todo-input")).sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+        WebElement listItemText = driver.findElement(By.cssSelector("li:nth-child(1) label"));
+        String modifiedListItem = listItemText.getText();
+        assertEquals("Walk the dog again", modifiedListItem);
     }
 
 
