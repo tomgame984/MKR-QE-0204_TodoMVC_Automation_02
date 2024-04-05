@@ -130,6 +130,28 @@ public class TodoMVCTest {
         inputField.sendKeys("Watch the movie");
         inputField.sendKeys(Keys.ENTER);
         Thread.sleep(2000);
+        driver.findElement(By.cssSelector(".toggle-all")).click();
+        List<WebElement> completedItem = driver.findElements(By.cssSelector(".completed"));
+        System.out.println(completedItem.size());
+        assertEquals(completedItem.size(),2);
+    }
+
+    @Test
+    void changeAllTodosToActive() throws InterruptedException {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog");
+        inputField.sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+        inputField.sendKeys("Watch the movie");
+        inputField.sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+        driver.findElement(By.cssSelector(".toggle-all")).click();
+        driver.findElement(By.cssSelector(".toggle-all")).click();
+        List<WebElement> activeItem = driver.findElements(By.cssSelector(".view"));
+        assertEquals(activeItem.size(),2);
+        Thread.sleep(2000);
     }
 
     @DisplayName("Test Adding Multiple todo Items")
