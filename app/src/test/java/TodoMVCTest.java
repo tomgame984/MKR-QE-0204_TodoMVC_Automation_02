@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,7 +80,57 @@ public class TodoMVCTest {
         assertEquals("Walk the dog again", modifiedListItem);
     }
 
+    @Test
+    void deleteAnActiveItem() throws InterruptedException {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk");
+        inputField.sendKeys(Keys.ENTER);
+        driver.findElement(By.cssSelector(".view > label")).click();
+        driver.findElement(By.cssSelector(".destroy")).click();
+        List<WebElement> todoItemElements = driver.findElements(By.cssSelector("[data-testid='todo-item']"));
+        assertEquals(todoItemElements.size(),0);
 
+    }
+    @Test
+    void changeStatesToCompleted() throws InterruptedException {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog");
+        inputField.sendKeys(Keys.ENTER);
+        driver.findElement(By.cssSelector(".toggle")).click();
+        List<WebElement> completedItem = driver.findElements(By.cssSelector(".completed"));
+        System.out.println(completedItem.size());
+        assertEquals(completedItem.size(),1);
+    }
+
+    @Test
+    void changeStatesToActive() throws InterruptedException {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog");
+        inputField.sendKeys(Keys.ENTER);
+        driver.findElement(By.cssSelector(".toggle")).click();
+        driver.findElement(By.cssSelector(".toggle")).click();
+        List<WebElement> activeItem = driver.findElements(By.cssSelector(".view"));
+        assertEquals(activeItem.size(),1);
+    }
+
+    @Test
+    void changeAllTodosToCompleted() throws InterruptedException {
+        driver.findElement(By.cssSelector("a[href='examples/react/dist/']")).click();
+        WebElement inputField = driver.findElement(By.id("todo-input"));
+        inputField.click();
+        inputField.sendKeys("Walk the dog");
+        inputField.sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+        inputField.sendKeys("Watch the movie");
+        inputField.sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+    }
 
     @DisplayName("Test Adding Multiple todo Items")
     @ParameterizedTest( name = "Add {0} should return {1}")
